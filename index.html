@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pamptech | Desenvolvimento de Websites & Soluções Web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#344dcd',
+                        'accent-hover': '#283ca6',
+                        darktext: '#0f0f17',
+                        lightbg: '#f1f1f1',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #f1f1f1;
+            color: #0f0f17;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .glass-nav {
+            background: rgba(241, 241, 241, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .link-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(52, 77, 205, 0.15), 0 8px 10px -6px rgba(52, 77, 205, 0.1);
+        }
+
+        /* Modal transitions */
+        .modal-backdrop {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Toast notification */
+        #toast {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        /* 1. Opcional: Garante o posicionamento relativo via CSS caso não queira usar a classe no HTML */
+        .meu-tooltip {
+            position: relative;
+        }
+
+        /* Esconde o tooltip por padrão (posicionado para baixo) */
+        .meu-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 125%; /* Altera de bottom para top para posicionar abaixo do botão */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Exibe o tooltip ao passar o mouse */
+        .meu-tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-accent selection:text-white">
+
+    <!-- Navegação Fixa (Header) -->
+    <header class="fixed top-0 left-0 w-full z-40 glass-nav border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#home" class="flex items-center gap-2">
+                <img src="pamptech-logo-bglight.png" alt="Pamptech" width="150">
+            </a>
+
+            <!-- Menu Desktop -->
+            <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-darktext/80">
+                <a href="#home" class="hover:text-accent transition-colors">Home</a>
+                <a href="#sobre" class="hover:text-accent transition-colors">Sobre</a>
+                <a href="#servicos" class="hover:text-accent transition-colors">Serviços</a>
+                <a href="#duvidas" class="hover:text-accent transition-colors">Dúvidas</a>
+                <a href="#contato" class="hover:text-accent transition-colors">Contato</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <button onclick="openBudgetModal()" class="meu-tooltip relative hidden sm:flex bg-accent hover:bg-accent-hover text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-sm transition-colors items-center gap-2" data-tooltip="Você fala direto com a Pamptech, sem robôs.">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    Solicitar Orçamento
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+
+        <!-- SEÇÃO 1: HOME (HERO) -->
+        <section id="home" class="max-w-4xl mx-auto px-4 py-12 md:py-20 flex flex-col items-center text-center">
+            
+
+
+            <div class="inline-flex items-center gap-2 bg-white/80 border border-gray-200 px-3.5 py-1.5 rounded-full shadow-sm mb-4">
+                <i class="fa-solid fa-circle-check text-accent text-xs"></i>
+                <span class="text-xs font-semibold text-darktext/80">Websites modernos, rápidos e simples de navegar</span>
+            </div>
+
+            <h1 class="text-3xl md:text-5xl font-extrabold text-darktext tracking-tight max-w-2xl leading-tight">
+                Seu negócio precisa de um <span class="text-accent">site profissional?</span>
+            </h1>
+            
+            <p class="text-sm md:text-base text-darktext/75 mt-4 max-w-xl leading-relaxed">
+                Desenvolvemos o site ideal para o seu negócio ter uma presença marcante na internet e valorizar cada detalhe do seu trabalho.
+            </p>
+
+            <!-- Redes Sociais -->
+            <div class="flex items-center gap-3 mt-6 mb-8">
+                <a href="https://wa.me/5511999999999" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-10 h-10 rounded-full bg-white text-darktext/80 hover:text-accent flex items-center justify-center shadow-sm border border-gray-200 transition-all hover:scale-110">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="w-10 h-10 rounded-full bg-white text-darktext/80 hover:text-accent flex items-center justify-center shadow-sm border border-gray-200 transition-all hover:scale-110">
+                    <i class="fa-brands fa-instagram text-lg"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" class="w-10 h-10 rounded-full bg-white text-darktext/80 hover:text-accent flex items-center justify-center shadow-sm border border-gray-200 transition-all hover:scale-110">
+                    <i class="fa-brands fa-linkedin-in text-lg"></i>
+                </a>
+                <a href="mailto:contato@pamptech.com.br" aria-label="E-mail" class="w-10 h-10 rounded-full bg-white text-darktext/80 hover:text-accent flex items-center justify-center shadow-sm border border-gray-200 transition-all hover:scale-110">
+                    <i class="fa-regular fa-envelope text-lg"></i>
+                </a>
+            </div>
+
+
+
+        </section>
+
+        <!-- SEÇÃO 2: SOBRE -->
+        <section id="sobre" class="max-w-4xl mx-auto px-4 py-12">
+            <div class="text-center mb-8">
+                <span class="text-xs font-bold uppercase tracking-wider text-accent bg-accent/10 px-3 py-1 rounded-full">Diferenciais</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-darktext mt-2">A Essência da Pamptech</h2>
+                <p class="text-xs text-darktext/70 mt-1 max-w-md mx-auto">Desenvolvemos estruturas focadas em resultados reais para a sua marca.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="glass-card p-6 rounded-2xl border border-gray-200 shadow-sm hover:border-accent transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-darktext mb-2">Criação Rápida & Sob Medida</h3>
+                    <p class="text-xs text-darktext/70 leading-relaxed">
+                        Desenvolvemos a estrutura ideal para atender aos seus objetivos de negócio com agilidade, sem modelos genéricos.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border border-gray-200 shadow-sm hover:border-accent transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-darktext mb-2">Foco em Conversão</h3>
+                    <p class="text-xs text-darktext/70 leading-relaxed">
+                        Páginas pensadas para guiar o visitante até o contato direto, transformando tráfego em clientes reais para seu negócio.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border border-gray-200 shadow-sm hover:border-accent transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-gears"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-darktext mb-2">Presença Digital Completa</h3>
+                    <p class="text-xs text-darktext/70 leading-relaxed">
+                        Cuidamos de tudo: desde o design e hospedagem até a configuração de e-mail e indexação no Google.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: SERVIÇOS -->
+        <section id="servicos" class="max-w-4xl mx-auto px-4 py-12">
+            <div class="text-center mb-8">
+                <span class="text-xs font-bold uppercase tracking-wider text-accent bg-accent/10 px-3 py-1 rounded-full">O que fazemos</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-darktext mt-2">Soluções Web Sob Medida</h2>
+                <p class="text-xs text-darktext/70 mt-1">Escolha a melhor estrutura para o momento do seu negócio</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                
+                <!-- Serviço 1 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between link-card">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-accent bg-accent/10 px-2.5 py-0.5 rounded-full">Bio de Redes</span>
+                            <span class="text-sm font-extrabold text-accent">A partir de R$ 250</span>
+                        </div>
+                        <h3 class="text-base font-bold text-darktext mb-1">01 — Página de Links & Eventos</h3>
+                        <p class="text-xs text-darktext/70 leading-relaxed mb-4">
+                            Estrutura ideal para a bio das redes sociais ou landing pages direcionadas para divulgação de datas e inscrições.
+                        </p>
+                    </div>
+                    <button onclick="openBudgetModal()" class="w-full bg-accent/10 hover:bg-accent hover:text-white text-accent font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1">
+                        Solicitar este modelo <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Serviço 2 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between link-card">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-accent bg-accent/10 px-2.5 py-0.5 rounded-full">Recomendado</span>
+                            <span class="text-sm font-extrabold text-accent">A partir de R$ 600</span>
+                        </div>
+                        <h3 class="text-base font-bold text-darktext mb-1">02 — Landing Pages & Portfólios</h3>
+                        <p class="text-xs text-darktext/70 leading-relaxed mb-4">
+                            Páginas únicas focadas em vendas e alta conversão, com animações, botões de ação e otimização para motores de busca.
+                        </p>
+                    </div>
+                    <button onclick="openBudgetModal()" class="w-full bg-accent/10 hover:bg-accent hover:text-white text-accent font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1">
+                        Solicitar este modelo <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Serviço 3 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between link-card">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-accent bg-accent/10 px-2.5 py-0.5 rounded-full">Exibição</span>
+                            <span class="text-sm font-extrabold text-accent">A partir de R$ 750</span>
+                        </div>
+                        <h3 class="text-base font-bold text-darktext mb-1">03 — Catálogos Digitais</h3>
+                        <p class="text-xs text-darktext/70 leading-relaxed mb-4">
+                            Exibição organizada dos seus produtos por categorias para facilitar a navegação e a escolha do seu cliente.
+                        </p>
+                    </div>
+                    <button onclick="openBudgetModal()" class="w-full bg-accent/10 hover:bg-accent hover:text-white text-accent font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1">
+                        Solicitar este modelo <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Serviço 4 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between link-card">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-accent bg-accent/10 px-2.5 py-0.5 rounded-full">Completo</span>
+                            <span class="text-sm font-extrabold text-accent">A partir de R$ 1.200</span>
+                        </div>
+                        <h3 class="text-base font-bold text-darktext mb-1">04 — Sites Institucionais</h3>
+                        <p class="text-xs text-darktext/70 leading-relaxed mb-4">
+                            Apresentação completa da sua empresa (de 3 a 5 páginas) para fortalecer sua marca, transmitir autoridade e passar credibilidade.
+                        </p>
+                    </div>
+                    <button onclick="openBudgetModal()" class="w-full bg-accent/10 hover:bg-accent hover:text-white text-accent font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1">
+                        Solicitar este modelo <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 4: DÚVIDAS (FAQ) -->
+        <section id="duvidas" class="max-w-3xl mx-auto px-4 py-12">
+            <div class="text-center mb-8">
+                <span class="text-xs font-bold uppercase tracking-wider text-accent bg-accent/10 px-3 py-1 rounded-full">Tire suas dúvidas</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-darktext mt-2">Perguntas Frequentes</h2>
+                <p class="text-xs text-darktext/70 mt-1">Entenda o processo de criação do seu projeto</p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <!-- FAQ Item 1 -->
+                <details class="glass-card rounded-2xl border border-gray-200 p-4 group cursor-pointer">
+                    <summary class="flex justify-between items-center text-sm font-bold text-darktext list-none">
+                        <span>Quanto tempo leva para o site ficar pronto?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-accent transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <p class="text-xs text-darktext/70 mt-3 leading-relaxed border-t border-gray-100 pt-3">
+                        O prazo varia de acordo com a complexidade do projeto. Páginas de Links e Landing Pages costumam ser entregues entre 3 a 7 dias úteis após o recebimento dos conteúdos. Sites Institucionais levam de 10 a 15 dias.
+                    </p>
+                </details>
+
+                <!-- FAQ Item 2 -->
+                <details class="glass-card rounded-2xl border border-gray-200 p-4 group cursor-pointer">
+                    <summary class="flex justify-between items-center text-sm font-bold text-darktext list-none">
+                        <span>O site funciona em celulares e tablets?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-accent transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <p class="text-xs text-darktext/70 mt-3 leading-relaxed border-t border-gray-100 pt-3">
+                        Sim! Todos os projetos desenvolvidos pela Pamptech são 100% responsivos e otimizados para oferecer uma navegação rápida e perfeita em qualquer dispositivo.
+                    </p>
+                </details>
+
+                <!-- FAQ Item 3 -->
+                <details class="glass-card rounded-2xl border border-gray-200 p-4 group cursor-pointer">
+                    <summary class="flex justify-between items-center text-sm font-bold text-darktext list-none">
+                        <span>Preciso ter domínio e hospedagem contratados?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-accent transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <p class="text-xs text-darktext/70 mt-3 leading-relaxed border-t border-gray-100 pt-3">
+                        Não se preocupe se ainda não tiver. Nós auxiliamos no registro do seu domínio (.com.br) e na escolha do plano de hospedagem ideal para o seu site.
+                    </p>
+                </details>
+
+                <!-- FAQ Item 4 -->
+                <details class="glass-card rounded-2xl border border-gray-200 p-4 group cursor-pointer">
+                    <summary class="flex justify-between items-center text-sm font-bold text-darktext list-none">
+                        <span>Como funciona o pagamento?</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-accent transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <p class="text-xs text-darktext/70 mt-3 leading-relaxed border-t border-gray-100 pt-3">
+                        Trabalhamos com entrada de 50% no início do projeto e os 50% restantes no momento da aprovação final e publicação do site.
+                    </p>
+                </details>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 5: CONTATO -->
+        <section id="contato" class="max-w-4xl mx-auto px-4 py-12 mb-8">
+            <div class="glass-card rounded-3xl border border-gray-200 p-6 md:p-10 shadow-lg">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-accent bg-accent/10 px-3 py-1 rounded-full">Orçamento</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-darktext mt-3">Vamos tirar o seu projeto do papel?</h2>
+                        <p class="text-xs text-darktext/70 mt-2 leading-relaxed">
+                            Entre em contato hoje mesmo e solicite um orçamento sem compromisso para impulsionar a sua presença digital.
+                        </p>
+
+                        <div class="flex flex-col gap-3 mt-6">
+                            <a href="https://wa.me/5511999999999" target="_blank" class="flex items-center gap-3 text-xs text-darktext font-semibold hover:text-accent transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-green-500/10 text-green-600 flex items-center justify-center">
+                                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                                </div>
+                                (11) 99999-9999
+                            </a>
+                            <a href="mailto:contato@pamptech.com.br" class="flex items-center gap-3 text-xs text-darktext font-semibold hover:text-accent transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center">
+                                    <i class="fa-regular fa-envelope text-sm"></i>
+                                </div>
+                                contato@pamptech.com.br
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Formulário Rápido de Contato -->
+                    <form onsubmit="sendWhatsAppBudget(event)" class="flex flex-col gap-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                        <h3 class="text-sm font-bold text-darktext">Enviar Mensagem</h3>
+                        <div>
+                            <label class="block text-[11px] font-bold text-darktext mb-1">Seu Nome *</label>
+                            <input type="text" id="main-form-name" required placeholder="Ex: Maria Santos" class="w-full px-3 py-2 rounded-xl bg-lightbg border border-gray-200 text-xs text-darktext focus:outline-none focus:border-accent">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-darktext mb-1">Tipo de Projeto *</label>
+                            <select id="main-form-service" required class="w-full px-3 py-2 rounded-xl bg-lightbg border border-gray-200 text-xs text-darktext focus:outline-none focus:border-accent">
+                                <option value="Página de Links / Eventos">Página de Links / Eventos</option>
+                                <option value="Landing Page / Portfólio">Landing Page / Portfólio</option>
+                                <option value="Catálogo Digital">Catálogo Digital</option>
+                                <option value="Site Institucional">Site Institucional</option>
+                                <option value="Outro Projeto Customizado">Outro Projeto Customizado</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-darktext mb-1">Mensagem (Opcional)</label>
+                            <textarea id="main-form-details" rows="2" placeholder="Conte-nos um pouco sobre a sua ideia..." class="w-full px-3 py-2 rounded-xl bg-lightbg border border-gray-200 text-xs text-darktext focus:outline-none focus:border-accent resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full mt-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-md transition-colors">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            ENVIAR VIA WHATSAPP
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center text-xs text-darktext/50 font-medium py-6 border-t border-gray-200 bg-white/50">
+        <p>© 2026 Pamptech — Soluções e Desenvolvimento. Todos os direitos reservados.</p>
+        <p class="text-[11px] mt-1 text-darktext/40">Desenvolvido com foco em alta conversão</p>
+    </footer>
+
+    <!-- MODAL 1: Tabela de Serviços e Pacotes -->
+    <div id="modal-services" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div onclick="closeServicesModal()" class="modal-backdrop absolute inset-0 bg-darktext/60 backdrop-blur-sm"></div>
+
+        <div class="modal-content relative bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 z-10 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                <div>
+                    <h2 class="text-lg font-bold text-darktext">Pacotes & Serviços</h2>
+                    <p class="text-xs text-darktext/60">Escolha a melhor opção para o seu negócio</p>
+                </div>
+                <button onclick="closeServicesModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-darktext flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div class="mt-4 flex flex-col gap-3">
+                <div class="p-4 rounded-2xl bg-lightbg border border-gray-200 flex flex-col justify-between gap-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-accent bg-accent/10 px-2 py-0.5 rounded-full">Popular</span>
+                            <h3 class="text-sm font-bold text-darktext mt-1">Página de Links</h3>
+                        </div>
+                        <span class="text-base font-extrabold text-accent">R$ 250</span>
+                    </div>
+                    <p class="text-xs text-darktext/70 leading-relaxed">
+                        Página focada para bio de redes sociais. Botões diretos para WhatsApp, catálogo, localização e redes.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-lightbg border border-gray-200 flex flex-col justify-between gap-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-accent bg-accent/10 px-2 py-0.5 rounded-full">Recomendado</span>
+                            <h3 class="text-sm font-bold text-darktext mt-1">Landing Page / Portfólio</h3>
+                        </div>
+                        <span class="text-base font-extrabold text-accent">R$ 600</span>
+                    </div>
+                    <p class="text-xs text-darktext/70 leading-relaxed">
+                        Página única estratégica e completa focada em vendas, captura de leads, animações suaves e botão de WhatsApp.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-lightbg border border-gray-200 flex flex-col justify-between gap-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-sm font-bold text-darktext">Catálogo Digital</h3>
+                        </div>
+                        <span class="text-base font-extrabold text-accent">R$ 750</span>
+                    </div>
+                    <p class="text-xs text-darktext/70 leading-relaxed">
+                        Exibição organizada de produtos divididos por categorias para fácil navegação do seu cliente.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-lightbg border border-gray-200 flex flex-col justify-between gap-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-sm font-bold text-darktext">Site Institucional</h3>
+                        </div>
+                        <span class="text-base font-extrabold text-accent">R$ 1.200</span>
+                    </div>
+                    <p class="text-xs text-darktext/70 leading-relaxed">
+                        Estrutura completa de 3 a 5 páginas (Home, Sobre, Serviços, Contato), otimização SEO básica e integração completa.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <button onclick="closeServicesModal(); openBudgetModal();" class="w-full bg-accent hover:bg-accent-hover text-white py-3 rounded-2xl font-bold text-xs tracking-wide transition-colors shadow-md">
+                    SOLICITAR ORÇAMENTO AGORA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Solicitar Orçamento via WhatsApp -->
+    <div id="modal-budget" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div onclick="closeBudgetModal()" class="modal-backdrop absolute inset-0 bg-darktext/60 backdrop-blur-sm"></div>
+
+        <div class="modal-content relative bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 z-10">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div>
+                    <h2 class="text-lg font-bold text-darktext">Solicitar Orçamento</h2>
+                    <p class="text-xs text-darktext/60">Preencha rapidamente para enviar no WhatsApp</p>
+                </div>
+                <button onclick="closeBudgetModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-darktext flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <form id="budget-form" onsubmit="sendWhatsAppModalBudget(event)" class="mt-4 flex flex-col gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-darktext mb-1">Seu Nome *</label>
+                    <input type="text" id="form-name" required placeholder="Ex: Maria Santos" class="w-full px-3 py-2.5 rounded-xl bg-lightbg border border-gray-200 text-xs text-darktext focus:outline-none focus:border-accent">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-darktext mb-1">Tipo de Projeto *</label>
+                    <select id="form-service" required class="w-full px-3 py-2.5 rounded-xl bg-lightbg border border-gray-200 text-xs text-darktext focus:outline-none focus:border-accent">
+                        <option value="Página de Links (R$ 250)">Página de Links (R$ 250)</option>
+                        <option value="Landing Page / Portfólio (R$ 600)">Landing Page / Portfólio (R$ 600)</option>
+                        <option value="Catálogo Digital (R$ 750)">Catálogo Digital (R$ 750)</option>
+                        <option value="Site Institucional (R$ 1.200)">Site Institucional (R$ 1.200)</option>
+                        <option value="Outro Projeto Customizado">Outro Projeto Customizado</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-darktext mb-1">Detalhes Rápidos (Opcional)</label>
+                    <textarea id="form-details" rows="2" placeholder="Ex: Tenho uma empresa e preciso captar clientes..." class="w-full px-3 py-2 rounded-xl bg-lightbg border border-gray-200 text-xs text-darktext focus:outline-none focus:border-accent resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full mt-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md transition-colors">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    ENVIAR PARA O WHATSAPP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-darktext text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transform translate-y-4">
+        Mensagem de aviso aqui
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Copiar Link da Página
+        function copyPageLink() {
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = window.location.href;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            const copyIcon = document.getElementById('copy-icon');
+            copyIcon.className = 'fa-solid fa-check text-green-500';
+
+            showToast('Link copiado para a área de transferência!');
+
+            setTimeout(() => {
+                copyIcon.className = 'fa-solid fa-link';
+            }, 3000);
+        }
+
+        // Modais de Serviços
+        function openServicesModal() {
+            document.getElementById('modal-services').classList.remove('hidden');
+        }
+
+        function closeServicesModal() {
+            document.getElementById('modal-services').classList.add('hidden');
+        }
+
+        // Modais de Orçamento
+        function openBudgetModal() {
+            document.getElementById('modal-budget').classList.remove('hidden');
+        }
+
+        function closeBudgetModal() {
+            document.getElementById('modal-budget').classList.add('hidden');
+        }
+
+        // Enviar Orçamento do Modal via WhatsApp
+        function sendWhatsAppModalBudget(e) {
+            e.preventDefault();
+            const name = document.getElementById('form-name').value;
+            const service = document.getElementById('form-service').value;
+            const details = document.getElementById('form-details').value;
+
+            let phone = "5511999999999"; 
+            let message = `Olá Pamptech! Meu nome é *${name}*.\n\n`;
+            message += `Gostaria de um orçamento para: *${service}*.\n`;
+            if (details.trim() !== "") {
+                message += `Detalhes do projeto: ${details}\n`;
+            }
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+            closeBudgetModal();
+        }
+
+        // Enviar Formulário da Seção de Contato
+        function sendWhatsAppBudget(e) {
+            e.preventDefault();
+            const name = document.getElementById('main-form-name').value;
+            const service = document.getElementById('main-form-service').value;
+            const details = document.getElementById('main-form-details').value;
+
+            let phone = "5511999999999"; 
+            let message = `Olá Pamptech! Meu nome é *${name}*.\n\n`;
+            message += `Gostaria de solicitar um orçamento para: *${service}*.\n`;
+            if (details.trim() !== "") {
+                message += `Detalhes: ${details}\n`;
+            }
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+        }
+
+        // Função auxiliar para Notificação Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
